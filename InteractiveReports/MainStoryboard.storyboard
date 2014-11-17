@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="VhL-cC-Fz8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="13F34" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="VhL-cC-Fz8">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
         <!--Settings View Controller-->
@@ -519,10 +520,10 @@ Info designed by NAS from thenounproject.com</string>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Jiy-et-MLe"/>
+        <segue reference="BZL-NU-5hz"/>
         <segue reference="JAa-GU-m4v"/>
         <segue reference="zhJ-Mj-Hm7"/>
         <segue reference="Xtb-eT-fZ3"/>
-        <segue reference="BZL-NU-5hz"/>
+        <segue reference="8r0-0G-QLy"/>
     </inferredMetricsTieBreakers>
 </document>

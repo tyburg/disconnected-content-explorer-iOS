@@ -155,7 +155,19 @@
 
 #endif // end of READER_BOOKMARKS Option
 
-		if (document.canEmail == YES) // Document email enabled
+        // GIAT Apps team modification - remove the email, print, and export buttons. Add in a search box
+        CGRect frame = CGRectMake(rightButtonX - 200, BUTTON_Y, 200.0f, BUTTON_HEIGHT);
+        UITextField *searchField = [[UITextField alloc] initWithFrame:frame];
+        searchField.borderStyle = UITextBorderStyleRoundedRect;
+        searchField.textColor = [UIColor blackColor];
+        searchField.font = [UIFont systemFontOfSize:17.0];
+        searchField.placeholder = @"Search";
+        searchField.backgroundColor = [UIColor whiteColor];
+        searchField.keyboardType = UIKeyboardTypeWebSearch;
+        searchField.delegate = self;
+        [self addSubview:searchField];
+        
+		/*if (document.canEmail == YES) // Document email enabled
 		{
 			if ([MFMailComposeViewController canSendMail] == YES) // Can email
 			{
@@ -217,7 +229,10 @@
 			exportButton.exclusiveTouch = YES;
 
 			[self addSubview:exportButton]; titleWidth -= (iconButtonWidth + buttonSpacing);
-		}
+		}*/
+        
+        
+        
 
 		if (largeDevice == YES) // Show document filename in toolbar
 		{
@@ -352,5 +367,15 @@
 {
 	[delegate tappedInToolbar:self markButton:button];
 }
+
+#pragma mark - UITextView delegate methods
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    // call search code
+    NSLog(@"textfield returned: %@", textField.text);
+    [textField resignFirstResponder];
+    return YES;
+}
+
 
 @end

@@ -40,10 +40,11 @@
 - (void)tappedInToolbar:(ReaderMainToolbar *)toolbar printButton:(UIButton *)button;
 - (void)tappedInToolbar:(ReaderMainToolbar *)toolbar emailButton:(UIButton *)button;
 - (void)tappedInToolbar:(ReaderMainToolbar *)toolbar markButton:(UIButton *)button;
+- (void)searchInitiated:(ReaderMainToolbar *)toolbar searchField:(UITextField *)field;
 
 @end
 
-@interface ReaderMainToolbar : UIXToolbarView
+@interface ReaderMainToolbar : UIXToolbarView <UITextViewDelegate>
 
 @property (nonatomic, weak, readwrite) id <ReaderMainToolbarDelegate> delegate;
 

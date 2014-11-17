@@ -845,6 +845,13 @@
 #endif // end of READER_BOOKMARKS Option
 }
 
+
+-(void)searchInitiated:(ReaderMainToolbar *)toolbar searchField:(UITextField *)field
+{
+    
+}
+
+
 #pragma mark - MFMailComposeViewControllerDelegate methods
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
