@@ -288,6 +288,8 @@
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object
 {
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDocument:) name:@"DICEPDFSearch" object:nil];
+    
 	if ((self = [super initWithNibName:nil bundle:nil])) // Initialize superclass
 	{
 		if ((object != nil) && ([object isKindOfClass:[ReaderDocument class]])) // Valid object
@@ -905,5 +907,35 @@
 
 	if (userInterfaceIdiom == UIUserInterfaceIdiomPad) if (printInteraction != nil) [printInteraction dismissAnimated:NO];
 }
+
+- (void)refreshDocument:(NSNotification *)notification
+{
+    NSString *keyword = [notification.userInfo objectForKey:@"keyword"];
+    
+    NSArray *keys = [contentViews allKeys];
+    
+    NSLog(@"%lu number of keys in contentViews dictionary", (unsigned long)[keys count]);
+    
+    for (NSNumber *key in [contentViews allKeys]) // Enumerate content views
+    {
+        ReaderContentView *contentView = [contentViews objectForKey:key];
+        NSLog(@"ReaderViewController: Setting keyword %@ for page: %@", keyword, key);
+        [contentView setKeyword:keyword page:key];
+        [contentView redrawPage];
+    }
+    
+    /*
+     [contentViews enumerateKeysAndObjectsUsingBlock: // Enumerate content views
+     ^(NSNumber *key, ReaderContentView *contentView, BOOL *stop)
+     {
+         NSLog(@"ReaderViewController: Setting keyword %@ for page: %@", keyword, key);
+         [contentView setKeyword:keyword];
+         [contentView redrawPage];
+     }
+     ];
+     */
+
+}
+
 
 @end

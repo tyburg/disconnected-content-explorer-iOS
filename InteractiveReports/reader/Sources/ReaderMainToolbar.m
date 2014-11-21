@@ -373,6 +373,13 @@
 {
     // call search code
     NSLog(@"textfield returned: %@", textField.text);
+    NSMutableDictionary *pdfSearch = [[NSMutableDictionary alloc] init];
+    [pdfSearch setObject:textField.text forKey:@"keyword"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DICEPDFSearch"
+                                                        object:nil
+                                                      userInfo:pdfSearch];
+
     [textField resignFirstResponder];
     return YES;
 }

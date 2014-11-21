@@ -408,6 +408,8 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDocument:) name:@"DICEPDFSearch" object:nil];
+    
 	if ((self = [super initWithFrame:frame]))
 	{
 		self.autoresizesSubviews = NO;
@@ -422,6 +424,8 @@
 
 - (instancetype)initWithURL:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDocument:) name:@"DICEPDFSearch" object:nil];
+    
 	CGRect viewRect = CGRectZero; // View rect
 
 	if (fileURL != nil) // Check for non-nil file URL
@@ -441,6 +445,7 @@
 			if (_PDFPageRef != NULL) // Check for non-NULL CGPDFPageRef
 			{
 				CGPDFPageRetain(_PDFPageRef); // Retain the PDF page
+                self.scanner = [Scanner scannerWithPage:_PDFPageRef];
 
 				CGRect cropBoxRect = CGPDFPageGetBoxRect(_PDFPageRef, kCGPDFCropBox);
 				CGRect mediaBoxRect = CGPDFPageGetBoxRect(_PDFPageRef, kCGPDFMediaBox);
@@ -513,8 +518,8 @@
 - (void)dealloc
 {
 	CGPDFPageRelease(_PDFPageRef), _PDFPageRef = NULL;
-
 	CGPDFDocumentRelease(_PDFDocRef), _PDFDocRef = NULL;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #if (READER_DISABLE_RETINA == TRUE) // Option
@@ -545,11 +550,66 @@
 	//CGContextSetRenderingIntent(context, kCGRenderingIntentDefault); CGContextSetInterpolationQuality(context, kCGInterpolationDefault);
 
 	CGContextDrawPDFPage(context, _PDFPageRef); // Render the PDF page into the context
+    
+    if (self.keyword) {
+        CGContextSetFillColorWithColor(context, [[UIColor yellowColor] CGColor]);
+        CGContextSetBlendMode(context, kCGBlendModeMultiply);
+        
+        self.selections = [self scanSelections];
+        
+        for (Selection *s in self.selections) {
+            CGContextSaveGState(context);
+            CGContextConcatCTM(context, s.transform);
+            CGContextFillRect(context, s.frame);
+            CGContextRestoreGState(context);
+        }
+    }
 
 	if (readerContentPage != nil) readerContentPage = nil; // Release self
 }
 
+
+#pragma mark - Search methods, using PDFKitten's search code
+- (void)refreshDocument:(NSNotification *)notification
+{
+    NSString *keyword = [notification.userInfo objectForKey:@"keyword"];
+    
+    NSLog(@"ReaderContentPage: recieved keyword: %@ for page", keyword);
+    self.keyword = keyword;
+    self.selections = nil;
+    [super setNeedsDisplay];
+    [self setNeedsDisplay];
+}
+
+
+
+- (void)setKeyword:(NSString *)keyword page:(NSNumber *)page
+{
+    NSLog(@"ReaderContentPage: recieved keyword: %@ for page %@", keyword, page);
+    self.keyword = keyword;
+    self.selections = nil;
+}
+
+
+- (NSArray *)scanSelections
+{
+    //@synchronized (self)
+    //{
+        if (!self.selections) {
+            self.selections = [self.scanner select:self.keyword];
+        }
+        return self.selections;
+    //}
+}
+
+
+- (void)redrawPage
+{
+    [self setNeedsDisplay];
+}
+
 @end
+
 
 #pragma mark -
 

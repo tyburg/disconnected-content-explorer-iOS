@@ -24,12 +24,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Scanner.h"
 
 @interface ReaderContentPage : UIView
 
 - (instancetype)initWithURL:(NSURL *)fileURL page:(NSInteger)page password:(NSString *)phrase;
 
 - (id)processSingleTap:(UITapGestureRecognizer *)recognizer;
+
+- (void)redrawPage;
+- (void)setKeyword:(NSString *)keyword page:(NSNumber *)page;
+
+@property (nonatomic, strong) NSString *keyword;
+@property (nonatomic, strong) NSArray *selections;
+@property (nonatomic, strong) Scanner *scanner;
 
 @end
 

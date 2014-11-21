@@ -40,8 +40,6 @@
 
 	UIUserInterfaceIdiom userInterfaceIdiom;
 
-	ReaderContentPage *theContentPage;
-
 	ReaderContentThumb *theThumbView;
 
 	CGFloat realMaximumZoom;
@@ -81,7 +79,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 
 - (void)updateMinimumMaximumZoom
 {
-	CGFloat zoomScale = zoomScaleThatFits(self.bounds.size, theContentPage.bounds.size, bugFixWidthInset);
+	CGFloat zoomScale = zoomScaleThatFits(self.bounds.size, self.theContentPage.bounds.size, bugFixWidthInset);
 
 	self.minimumZoomScale = zoomScale; self.maximumZoomScale = (zoomScale * ZOOM_MAXIMUM); // Limits
 
@@ -132,11 +130,11 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 		}
 #endif // End of only under 32-bit iOS code
 
-		theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
+		self.theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
 
-		if (theContentPage != nil) // Must have a valid and initialized content page
+		if (self.theContentPage != nil) // Must have a valid and initialized content page
 		{
-			theContainerView = [[UIView alloc] initWithFrame:theContentPage.bounds];
+			theContainerView = [[UIView alloc] initWithFrame:self.theContentPage.bounds];
 
 			theContainerView.autoresizesSubviews = NO;
 			theContainerView.userInteractionEnabled = NO;
@@ -152,17 +150,17 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 
 #endif // end of READER_SHOW_SHADOWS Option
 
-			self.contentSize = theContentPage.bounds.size; [self centerScrollViewContent];
+			self.contentSize = self.theContentPage.bounds.size; [self centerScrollViewContent];
 
 #if (READER_ENABLE_PREVIEW == TRUE) // Option
 
-			theThumbView = [[ReaderContentThumb alloc] initWithFrame:theContentPage.bounds]; // Page thumb view
+			theThumbView = [[ReaderContentThumb alloc] initWithFrame:self.theContentPage.bounds]; // Page thumb view
 
 			[theContainerView addSubview:theThumbView]; // Add the page thumb view to the container view
 
 #endif // end of READER_ENABLE_PREVIEW Option
 
-			[theContainerView addSubview:theContentPage]; // Add the content page to the container view
+			[theContainerView addSubview:self.theContentPage]; // Add the content page to the container view
 
 			[self addSubview:theContainerView]; // Add the container view to the scroll view
 
@@ -235,7 +233,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 
 - (id)processSingleTap:(UITapGestureRecognizer *)recognizer
 {
-	return [theContentPage processSingleTap:recognizer];
+	return [self.theContentPage processSingleTap:recognizer];
 }
 
 - (CGRect)zoomRectForScale:(CGFloat)scale withCenter:(CGPoint)center
@@ -255,7 +253,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 {
 	CGFloat zoomScale = self.zoomScale; // Current zoom
 
-	CGPoint point = [recognizer locationInView:theContentPage];
+	CGPoint point = [recognizer locationInView:self.theContentPage];
 
 	if (zoomScale < self.maximumZoomScale) // Zoom in
 	{
@@ -288,7 +286,7 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 {
 	CGFloat zoomScale = self.zoomScale; // Current zoom
 
-	CGPoint point = [recognizer locationInView:theContentPage];
+	CGPoint point = [recognizer locationInView:self.theContentPage];
 
 	if (zoomScale > self.minimumZoomScale) // Zoom out
 	{
@@ -317,6 +315,22 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 		if (animated) [self setZoomScale:self.minimumZoomScale animated:YES]; else self.zoomScale = self.minimumZoomScale; zoomBounced = NO;
 	}
 }
+
+
+- (void)redrawPage
+{
+    [self.theContentPage redrawPage];
+}
+
+
+- (void)setKeyword:(NSString *)keyword page:(NSNumber *)page
+{
+    NSLog(@"ReaderContentView: recieved keyword: %@ for page %@", keyword, page);
+    if (self.theContentPage != nil && keyword != nil) {
+        [self.theContentPage setKeyword:keyword];
+    }
+}
+
 
 #pragma mark - UIScrollViewDelegate methods
 
