@@ -28,7 +28,7 @@
 /* Push a rendering state to the stack */
 - (void)pushRenderingState:(RenderingState *)state
 {
-	[stack addObject:state];
+    [stack addObject:state];
 }
 
 /* Pops the top rendering state off the stack */
