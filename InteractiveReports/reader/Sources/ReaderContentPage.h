@@ -24,7 +24,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Scanner.h"
+//#import <PDFKitten/PDFKitten.h>
+#import "PDFKitten.h"
 
 @interface ReaderContentPage : UIView
 
@@ -37,7 +38,7 @@
 
 @property (nonatomic, strong) NSString *keyword;
 @property (nonatomic, strong) NSArray *selections;
-@property (nonatomic, strong) Scanner *scanner;
+@property (nonatomic, strong) PDFKPageSelectionsScanner *scanner;
 
 @end
 

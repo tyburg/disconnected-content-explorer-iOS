@@ -445,7 +445,7 @@
 			if (_PDFPageRef != NULL) // Check for non-NULL CGPDFPageRef
 			{
 				CGPDFPageRetain(_PDFPageRef); // Retain the PDF page
-                self.scanner = [Scanner scannerWithPage:_PDFPageRef];
+                self.scanner = [[PDFKPageSelectionsScanner alloc] initWithPage:_PDFPageRef];
 
 				CGRect cropBoxRect = CGPDFPageGetBoxRect(_PDFPageRef, kCGPDFCropBox);
 				CGRect mediaBoxRect = CGPDFPageGetBoxRect(_PDFPageRef, kCGPDFMediaBox);
@@ -557,9 +557,9 @@
         
         self.selections = [self scanSelections];
         
-        for (Selection *s in self.selections) {
+        for (PDFKSelection *s in self.selections) {
             CGContextSaveGState(context);
-            CGContextConcatCTM(context, s.transform);
+            //CGContextConcatCTM(context, s.transform);
             CGContextFillRect(context, s.frame);
             CGContextRestoreGState(context);
         }
@@ -596,7 +596,7 @@
     //@synchronized (self)
     //{
         if (!self.selections) {
-            self.selections = [self.scanner select:self.keyword];
+            self.selections = [self.scanner scanSelectionsMatchingString:self.keyword];
         }
         return self.selections;
     //}
